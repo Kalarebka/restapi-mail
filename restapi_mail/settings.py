@@ -7,6 +7,7 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+MEDIA_DIR = os.path.join(BASE_DIR, 'media')
 
 
 # Environment variables
@@ -35,6 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'mail'
 ]
 
 MIDDLEWARE = [
@@ -68,18 +71,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'restapi_mail.wsgi.application'
 
 
-# Database
-# SQLite for now
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 # Postgresql
-# DATABASES = {"default": env.db("DATABASE_URL")}
-# DATABASES["default"]["ENGINE"] = "django.db.backends.postgresql_psycopg2"
+DATABASES = {"default": env.db()}
+DATABASES["default"]["ENGINE"] = "django.db.backends.postgresql_psycopg2"
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -121,3 +115,30 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Pagination settings
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
+
+# Media
+MEDIA_ROOT = MEDIA_DIR
+MEDIA_URL = '/media/'
+
+# Error logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'class': 'logging.FileHandler',
+            'level': 'WARNING',
+            'filename': 'logs/email.log'
+        },
+    },
+    'root': {
+        'handlers': ['file'],
+        'level': 'WARNING',
+    },
+}
