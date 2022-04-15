@@ -3,6 +3,8 @@ from rest_framework import serializers
 
 
 class MailboxSerializer(serializers.ModelSerializer):
+    sent = serializers.IntegerField()
+
     class Meta:
         model = Mailbox
         fields = ['id', 'host', 'port', 'login', 'password', 'email_from', 'use_ssl', 'is_active', 'date', 'last_update', 'sent']
