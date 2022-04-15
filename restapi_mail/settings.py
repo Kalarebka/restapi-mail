@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'mail'
+    'mail',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -142,3 +143,6 @@ LOGGING = {
         'level': 'WARNING',
     },
 }
+
+# Celery settings
+CELERY_BROKER_URL = env('BROKER_URL')

@@ -3,40 +3,52 @@
 ### To run locally
 Clone the repository
 
-`git clone <url>`
+`$ git clone https://github.com/Kalarebka/restapi-mail.git`
 
-`cd restapi-mail`
+`$ cd restapi-mail`
 
 Create a virtual environment
 
-`python3.10 -m venv env`
+`$ python3.10 -m venv env`
 
-`source env/bin/activate`
+`$ source env/bin/activate`
 
 Install dependencies
 
-`pip install -r requirements.txt`
+`$ pip install -r requirements.txt`
 
 Create a database and an .env file with the path to the database
 
-`createdb <database_name>`
+`$ createdb <database_name>`
 
-`cd restapi_mail`
+`$ cd restapi_mail`
 
-`echo 'DATABASE_URL=postgres://<user>:<password>@<host>:<port>/<database_name>' >> .env`
+`$ echo 'DATABASE_URL=postgres://<user>:<password>@<host>:<port>/<database_name>' >> .env`
 
 Set secret key
 
-`echo 'SECRET_KEY=<secret key>' >> .env`
+`$ echo 'SECRET_KEY=<secret key>' >> .env`
 
-`cd ..`
+`$ cd ..`
 
 Create the database tables
 
-`python manage.py makemigrations`
+`$ python manage.py makemigrations`
 
-`python manage.py migrate`
+`$ python manage.py migrate`
 
 To be able to use the admin panel:
 
-`python manage.py createsuperuser --email admin@example.com --username admin`
+`$ python manage.py createsuperuser --email admin@example.com --username admin`
+
+Install and setup RabbitMQ message broker for Celery
+
+`$ sudo apt-get install rabbitmq-server`
+
+`$ sudo rabbitmqctl add_user myuser mypassword`
+
+`$ sudo rabbitmqctl add_vhost myvhost`
+
+`$ sudo rabbitmqctl set_permissions -p myvhost myuser ".*" ".*" ".*"`
+
+`$ echo "BROKER_URL='amqp://myuser:mypassword@localhost:5672/myvhost'" >> .env`
