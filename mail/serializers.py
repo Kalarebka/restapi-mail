@@ -20,3 +20,6 @@ class EmailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Email
         fields = ['id', 'mailbox', 'template', 'to', 'cc', 'bcc', 'reply_to', 'sent_date', 'date']
+
+    def create(self, validated_data):
+        return Email(**validated_data)

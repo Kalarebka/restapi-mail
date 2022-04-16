@@ -29,9 +29,12 @@ def send_email(self, email):
     if template.attachment:
         email_to_send.attach_file(template.attachment)
     try:
-        email_to_send.send(fail_silently=False)
-        email.sent_date = datetime.now()
-        email.save()
+        success = email_to_send.send(fail_silently=False)
+        if success:
+            email.sent_date = datetime.now()
+            email.save()
+        else:
+            raise self.retry()
     except Exception as e:
         logger.error(f"Error while sending message {email.id}: {e}")
         raise self.retry(exc=e)

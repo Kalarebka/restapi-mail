@@ -52,3 +52,9 @@ Install and setup RabbitMQ message broker for Celery
 `$ sudo rabbitmqctl set_permissions -p myvhost myuser ".*" ".*" ".*"`
 
 `$ echo "BROKER_URL='amqp://myuser:mypassword@localhost:5672/myvhost'" >> .env`
+
+Run Celery worker
+`$ celery -A restapi_mail worker -l INFO`
+
+Run Django server
+`$ python manage.py runserver`
