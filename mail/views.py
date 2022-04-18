@@ -5,7 +5,6 @@ from rest_framework import generics, mixins
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django_filters import rest_framework as filters
 
 
 # For api/mailbox/
@@ -39,14 +38,19 @@ class TemplateDetail(generics.RetrieveUpdateDestroyAPIView):
 # For api/email/
 class EmailList(mixins.ListModelMixin, APIView):
     """ GET a list of all emails, POST and send a single email"""
-    queryset = Email.objects.all()
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_fields = ('category', 'in_stock')
 
-    # def get(self, request):
-    #     queryset = Email.objects.all()
-    #     serializer = EmailSerializer(emails, many=True)
-    #     return Response(serializer.data)
+    def get_queryset(self):
+        """
+        Optionally filters emails according to date of creation (date) and/or sent status (True/False)
+        """
+        queryset = Email.objects.all()
+        date = self.request.query_params.get('date')
+        sent_status = self.request.query_params.get('sent_status')
+        if date is not None:
+            queryset = queryset.filter(date__date=date)
+        if sent_status is not None:
+            queryset = queryset.exclude(sent_date__is_null=sent_status)
+        return queryset
 
     def post(self, request):
         serializer = EmailSerializer(data=request.data)
@@ -58,10 +62,3 @@ class EmailList(mixins.ListModelMixin, APIView):
             tasks.send_email.delay(email)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-# FilterSet:
-class EmailFilter(filters.FilterSet):
-    class Meta:
-        model = Email
-        fields = ('sent_date', 'date')

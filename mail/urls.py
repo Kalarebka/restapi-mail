@@ -2,7 +2,7 @@ from django.urls import path
 
 from . import views
 
-app_name = "board"
+app_name = "mail"
 urlpatterns = [
     path('mailbox/', views.MailboxList.as_view(), name='mailbox_list'),
     path('mailbox/<id>/', views.MailboxDetail.as_view(), name='mailbox_detail'),
