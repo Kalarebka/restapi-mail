@@ -49,8 +49,16 @@ class EmailList(mixins.ListModelMixin, APIView):
         if date is not None:
             queryset = queryset.filter(date__date=date)
         if sent_status is not None:
-            queryset = queryset.exclude(sent_date__is_null=sent_status)
+            if sent_status == "True":
+                queryset = queryset.exclude(sent_date__isnull=True)
+            else:
+                queryset = queryset.exclude(sent_date__isnull=False)
         return queryset
+
+    def get(self):
+        queryset = self.get_queryset()
+        serializer = EmailSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
         serializer = EmailSerializer(data=request.data)
@@ -59,6 +67,7 @@ class EmailList(mixins.ListModelMixin, APIView):
             if not email.mailbox.is_active:
                 return Response({"Fail": "mailbox inactive"}, status=status.HTTP_400_BAD_REQUEST)
             email.save()
-            tasks.send_email.delay(email)
+            serializer = EmailSerializer(instance=email)
+            tasks.send_email.delay(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

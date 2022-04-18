@@ -1,7 +1,20 @@
 from .models import Mailbox, Template, Email
 from rest_framework import serializers
-from django.core.validators import validate_email
-from django.core.exceptions import ValidationError
+from rest_framework.fields import ListField
+
+
+class StringArrayField(ListField):
+    """
+    String representation of an array field.
+    """
+    def to_representation(self, obj):
+        obj = super().to_representation(obj)
+        return ",".join([str(element) for element in obj])
+
+    def to_internal_value(self, data):
+        # data = data.split(",")
+        return super().to_internal_value(data)
+
 
 class MailboxSerializer(serializers.ModelSerializer):
     sent = serializers.ReadOnlyField()
@@ -18,6 +31,10 @@ class TemplateSerializer(serializers.ModelSerializer):
 
 
 class EmailSerializer(serializers.ModelSerializer):
+    to = StringArrayField()
+    cc = StringArrayField(required=False)
+    bcc = StringArrayField(required=False)
+
     class Meta:
         model = Email
         fields = ['id', 'mailbox', 'template', 'to', 'cc', 'bcc', 'reply_to', 'sent_date', 'date']
@@ -25,13 +42,5 @@ class EmailSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return Email(**validated_data)
 
-
-
-    # def clean_to(self):
-    #     data = self.cleaned_data['to']
-    #     for email in data:
-    #         if not validate_email(email):
-    #             raise ValidationError('Invalid email {}'.format(email))  # or raise serializers.ValidationError
-    #     return data
 
 
