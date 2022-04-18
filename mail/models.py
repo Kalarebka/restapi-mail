@@ -9,13 +9,13 @@ class Mailbox(models.Model):
     host = models.CharField(max_length=100)
     port = models.IntegerField(default=465)
     login = models.CharField(max_length=50)
-    # TODO How to make password secure and retrievable at the same time?
     password = models.CharField(max_length=50)
     email_from = models.CharField(max_length=100)
     use_ssl = models.BooleanField(default=True)
     is_active = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now_add=True)
+    sent = models.IntegerField(default=0)
 
     @property
     def sent(self):
@@ -36,8 +36,8 @@ class Email(models.Model):
     mailbox = models.ForeignKey(Mailbox, on_delete=models.CASCADE)
     template = models.ForeignKey(Template, on_delete=models.CASCADE)
     to = ArrayField(models.EmailField(max_length=100))
-    cc = ArrayField(models.EmailField(max_length=100), blank=True)
-    bcc = ArrayField(models.EmailField(max_length=100), blank=True)
+    cc = ArrayField(models.EmailField(max_length=100), blank=True, null=True)
+    bcc = ArrayField(models.EmailField(max_length=100), blank=True, null=True)
     reply_to = models.EmailField(default=None, null=True)
     sent_date = models.DateTimeField(default=None, null=True)
     date = models.DateTimeField(auto_now_add=True)

@@ -6,7 +6,7 @@ from .models import Mailbox, Template, Email
 class MailboxTests(APITestCase):
     def test_create_mailbox(self):
         """ Test creating a new mailbox"""
-        url = reverse('mail:mailbox_list')
+        url = reverse('mailbox_list')
         data = {'host': 'host address',
                 'port': 25,
                 'login': 'user_login',
