@@ -38,4 +38,3 @@ def send_email(self, email):
     except Exception as e:
         logger.error(f"Error while sending message {email.id}: {e}")
         raise self.retry(exc=e)
-

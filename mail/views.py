@@ -1,10 +1,10 @@
+from rest_framework import generics, mixins, status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
 from mail import tasks
 from mail.models import Mailbox, Template, Email
 from mail.serializers import MailboxSerializer, TemplateSerializer, EmailSerializer
-from rest_framework import generics, mixins
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
 
 
 # For api/mailbox/
@@ -55,7 +55,7 @@ class EmailList(mixins.ListModelMixin, APIView):
                 queryset = queryset.exclude(sent_date__isnull=False)
         return queryset
 
-    def get(self):
+    def get(self, request):
         queryset = self.get_queryset()
         serializer = EmailSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

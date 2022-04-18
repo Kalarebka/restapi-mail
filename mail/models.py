@@ -15,7 +15,6 @@ class Mailbox(models.Model):
     is_active = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now_add=True)
-    sent = models.IntegerField(default=0)
 
     @property
     def sent(self):

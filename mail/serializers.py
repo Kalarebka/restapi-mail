@@ -1,18 +1,18 @@
-from .models import Mailbox, Template, Email
 from rest_framework import serializers
 from rest_framework.fields import ListField
+
+from .models import Mailbox, Template, Email
 
 
 class StringArrayField(ListField):
     """
-    String representation of an array field.
+    Custom field for Email serializer
     """
     def to_representation(self, obj):
         obj = super().to_representation(obj)
         return ",".join([str(element) for element in obj])
 
     def to_internal_value(self, data):
-        # data = data.split(",")
         return super().to_internal_value(data)
 
 
